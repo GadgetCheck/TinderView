@@ -12,7 +12,7 @@ In Action
 
 [Click here to watch the app in action on youtube!](https://youtu.be/ccnkq9HmyVY)
 
-![Screen 3](http://s4.postimg.org/x9bamw3yl/image.png)![Screen1](http://s4.postimg.org/7b7oguyh9/image.png)![Screen 2](http://s4.postimg.org/7p90ggikt/image.png) 
+![Screen 3](http://s4.postimg.org/x9bamw3yl/image.png)![Screen1](http://s4.postimg.org/7b7oguyh9/image.png)
 
 Developed By
 ============
