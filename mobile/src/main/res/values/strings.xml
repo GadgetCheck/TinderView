@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">tinderview</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="first_title">Discover</string>
+    <string name="first_desc">The fastest way to connect with startups in a single tap</string>
+
+    <string name="second_title">Connect</string>
+    <string name="second_desc">Simply swipe to connect with a startup. Chat freely &amp; take informed decisions</string>
+
+    <string name="third_title">Invest</string>
+    <string name="third_desc">Add friends to your group and invest together, We will help you keep track of everything</string>
+
+    <string name="tab1">Connect</string>
+    <string name="tab2">Discover</string>
+    <string name="tab3">Chat</string>
+
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- This theme is supportable for >=Lollipop devices-->
+    <style name="AppTheme" parent="AppTheme.Base">
+
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorControlHighlight">@color/colorControlHighlight</item>
+
+    </style>
+</resources>

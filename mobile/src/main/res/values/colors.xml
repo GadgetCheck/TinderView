@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    //ripple color for Tabs
+    <color name="white_transparent">#77ffffff</color>
+
+    //color for background
+    <color name="background">#e6e6e6</color>
+
+    //theme properties mentioned here
+    <color name="colorPrimary">#3498db</color>
+    <color name="colorPrimaryDark">#2980b9</color>
+    <color name="colorAccent">#FFFFFF</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+
+    <color name="colorControlHighlight">#b6b6b6</color>
+
+    //for ripple background animation
+    <color name="rippleColor">#993498db</color>
+
+    //stroke color for CardStack
+    <color name="strokeColor">#B1B1B1</color>
+
+    //these three different shadow colors for CardStack
+    <color name="solidColor">#fbfcfc</color>
+    <color name="solidColor2">#f8f8f8</color>
+    <color name="solidColor3">#f2f2f2</color>
+
+
+    //for pre-lollipop gradient color
+    <color name="pre_lollipop_shadow_color">#40000000</color>
+
+</resources>

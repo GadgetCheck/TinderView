@@ -1,0 +1,55 @@
+<!--this layout is for mainScreenActivity.java , in this layout we have used Toolbar,view and viewPager
+Toolbar used to set custom design and added tabView
+view used to provide shadow effect for pre-lollipop devices
+viewPager used to set three different fragment based on Tab.
+-->
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="-16dp"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/myThemeForToolbar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <!--To give Toolbar shadow effect in pre-lollipop
+        must need to use FrameLayout-->
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
+
+        <!--to show the list of pages and that would be visible based on tabs-->
+        <com.tinderview.util.CustomViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!--used for shadow effect for pre-lollipop devices-->
+    <View
+        android:id="@+id/shadow_prelollipop"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@drawable/toolbar_shadow_pre_lolipop" />
+
+
+    </FrameLayout>
+
+</RelativeLayout>
+
+

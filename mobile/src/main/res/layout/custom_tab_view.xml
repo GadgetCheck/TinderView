@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--this tabBarView will provide help to add tabBar
+to add tab we must have to call this TabBarVIew layout-->
+<com.tinderview.tabbarview.TabBarView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/customTabBar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:layout_gravity="left"
+    android:layout_margin="0dp"
+    android:gravity="left"
+    android:orientation="horizontal"
+    android:padding="0dp" />
+
+

@@ -1,0 +1,24 @@
+<!--this layout contains ripple background animation and Imageview
+In ripple animation tag we have set some properties -->
+<com.tinderview.animation.RippleAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:rb_color="@color/rippleColor"
+    app:rb_duration="3000"
+    app:rb_radius="48dp"
+    app:rb_rippleAmount="1"
+    app:rb_scale="7">
+
+
+    <!--ImageView used to display user's profile picture only-->
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/phone2" />
+
+
+</com.tinderview.animation.RippleAnimation>

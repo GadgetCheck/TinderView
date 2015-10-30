@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:enterFadeDuration="400" android:exitFadeDuration="400">
+    <item android:drawable="@drawable/ripple_selector_white" android:state_enabled="false" android:state_focused="true" android:state_pressed="true" />
+    <item android:drawable="@drawable/ripple_selector_white" android:state_enabled="false" android:state_focused="true" />
+    <item android:drawable="@drawable/ripple_selector_white" android:state_focused="true" android:state_pressed="true" />
+    <item android:drawable="@drawable/ripple_selector_white" android:state_focused="false" android:state_pressed="true" />
+    <item android:drawable="@drawable/ripple_selector_white" android:state_focused="true" />
+
+    <item android:drawable="@android:color/transparent" android:state_window_focused="false" />
+</selector>

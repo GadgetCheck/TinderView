@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?><!--this design provide view to CardStack object-->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal|top">
+
+    <!--in center of card it's display the number of CardStack-->
+    <TextView
+        android:id="@+id/helloText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="40sp"
+        tools:text="@string/hello_world" />
+
+
+    <!--  this view will indicate to user that you are swapping this card into left side-->
+    <View
+        android:id="@+id/item_swipe_left_indicator"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+
+        android:layout_margin="10dp"
+        android:alpha="0" />
+
+    <!--when user will swap the card into right side then it will indicate to user-->
+    <View
+        android:id="@+id/item_swipe_right_indicator"
+        android:layout_width="20dp"
+
+        android:layout_height="20dp"
+        android:layout_gravity="right"
+        android:layout_margin="10dp"
+        android:alpha="0" />
+
+
+</FrameLayout>

@@ -1,0 +1,24 @@
+<!--this fragment layout is using from Tab1
+it contains rippleBackgroundAnimation Layout
+and CardStack-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/frame_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tinderview.cardstatck.cardstack.CardStack
+        android:id="@+id/frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="30dp" />
+
+    <include layout="@layout/background_ripple_layout"
+
+
+        />
+</FrameLayout>
