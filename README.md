@@ -14,6 +14,15 @@ In Action
 
 ![Screen 3](http://s4.postimg.org/x9bamw3yl/image.png)![Screen1](http://s4.postimg.org/7b7oguyh9/image.png)
 
+<a href="https://play.google.com/store/apps/details?id=com.tinderview">
+  <img alt="Get it on Google Play"
+       src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
+</a> 
+
+The demo is now available, dont forget to give it 5 stats if it helped you. Oh if you can contribute to development of the library in anyway i would love to see your pull request. 
+
+Happy Coding! 
+
 Developed By
 ============
 
