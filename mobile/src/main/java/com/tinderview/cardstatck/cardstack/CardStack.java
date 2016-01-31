@@ -129,6 +129,7 @@ public class CardStack extends RelativeLayout {
 
     private void setupAnimation() {
         final View cardView = viewCollection.get(viewCollection.size() - 1);
+       // Log.e("REZWAN", ""+viewCollection.size());
         mCardAnimator = new CardAnimator(viewCollection); //creating an object of cardAnimator
         mCardAnimator.initLayout(); //initialize the cardAnimator using object
 
