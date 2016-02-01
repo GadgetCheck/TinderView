@@ -5,7 +5,7 @@ Created A Simple and Beautiful Tinder like card deck & Captain Train like toolba
 
 This is heavily based on [AndroidSwipeableCardStack](https://github.com/wenchaojiang/AndroidSwipeableCardStack), wenchaojiang has written the library very well but i faced a lot of difficulty integrating it & that's the reason i built this app so that you dont waste time. Use this repo as a base for your app & build on top :).
 
-API 19 and UP.
+API 16 and UP. (Support for API 16 is now live thanks to [#4] (https://github.com/GadgetCheck/TinderView/pull/4)) 
 
 In Action 
 =========
