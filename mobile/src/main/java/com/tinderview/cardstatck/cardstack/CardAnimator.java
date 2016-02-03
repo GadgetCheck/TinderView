@@ -5,11 +5,9 @@ import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
-import android.os.Build;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
@@ -35,9 +33,9 @@ public class CardAnimator {
     private static final int REMOTE_DISTANCE = 1000;
     public ArrayList<View> mCardCollection;
     private float mRotation; //dislike rotation value
-    private HashMap<View, LayoutParams> mLayoutsMap;//used to store the list of card's view
-    private LayoutParams[] mRemoteLayouts = new LayoutParams[4];//creating the four list of stack
-    private LayoutParams baseLayout;
+    private HashMap<View, RelativeLayout.LayoutParams> mLayoutsMap;//used to store the list of card's view
+    private RelativeLayout.LayoutParams[] mRemoteLayouts = new RelativeLayout.LayoutParams[4];//creating the four list of stack
+    private RelativeLayout.LayoutParams baseLayout;
     private int mStackMargin = 21;//set the margin of cardstack
 
 
@@ -55,7 +53,7 @@ public class CardAnimator {
 
         for (View v : mCardCollection) {
             //setup basic card layout
-            LayoutParams params = (LayoutParams) v.getLayoutParams();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
             params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             params.width = LayoutParams.MATCH_PARENT;
             params.height = LayoutParams.MATCH_PARENT;
@@ -64,45 +62,21 @@ public class CardAnimator {
 
         }
 
-        baseLayout = (LayoutParams) mCardCollection.get(0).getLayoutParams();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            baseLayout = new LayoutParams(baseLayout);
-        }else{
-            baseLayout = LayoutParamsALT(baseLayout);
-        }
-
-
+        baseLayout = (RelativeLayout.LayoutParams) mCardCollection.get(0).getLayoutParams();
+        baseLayout = new RelativeLayout.LayoutParams(baseLayout);
 
         initLayout();//calling this method to arrange all the card based on StackView
 
         for (View v : mCardCollection) {
-            LayoutParams params = (LayoutParams) v.getLayoutParams();
-            LayoutParams paramsCopy = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                paramsCopy = new LayoutParams(params);
-            }else {
-                paramsCopy  =  LayoutParamsALT(params);
-            }
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
+            RelativeLayout.LayoutParams paramsCopy = new RelativeLayout.LayoutParams(params);
             mLayoutsMap.put(v, paramsCopy);
         }
 
         setupRemotes();
 
     }
-    public LayoutParams LayoutParamsALT(LayoutParams source) {
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(source.width, source.height);
-        layoutParams.width = source.width;
-        layoutParams.height = source.height;
 
-        layoutParams.leftMargin = source.leftMargin;
-        layoutParams.topMargin = source.topMargin;
-        layoutParams.rightMargin = source.rightMargin;
-        layoutParams.bottomMargin = source.bottomMargin;
-        layoutParams.alignWithParent = source.alignWithParent;
-
-        System.arraycopy(source.getRules(), 0, layoutParams.getRules(), 0, 22);
-        return layoutParams;
-    }
     /* finding the index of view and creating layoutParams using baseLayout object and those height and width setting to view
     *  using method of v.setLayoutParams
     *  and setting card scale size to give curve shape to card
@@ -115,12 +89,7 @@ public class CardAnimator {
             if (index != 0) {
                 index -= 1;
             }
-            LayoutParams params = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                params = new LayoutParams(baseLayout);
-            }else{
-                params = LayoutParamsALT(baseLayout);
-            }
+            LayoutParams params = new LayoutParams(baseLayout);
             v.setLayoutParams(params);
 
             //calling scale method of CardUtils class to set the margin and than put layout into v
@@ -196,13 +165,8 @@ public class CardAnimator {
 
 
         final View topView = getTopView();
-        LayoutParams topParams = (LayoutParams) topView.getLayoutParams();
-        LayoutParams layout = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            layout = new LayoutParams(topParams);
-        }else{
-            layout =  LayoutParamsALT(topParams);
-        }
+        RelativeLayout.LayoutParams topParams = (RelativeLayout.LayoutParams) topView.getLayoutParams();
+        RelativeLayout.LayoutParams layout = new RelativeLayout.LayoutParams(topParams);
         ValueAnimator discardAnim = ValueAnimator.ofObject(new RelativeLayoutParamsEvaluator(), layout, mRemoteLayouts[direction]);
 
         discardAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -220,13 +184,8 @@ public class CardAnimator {
 
             if (v == topView) continue;
             final View nv = mCardCollection.get(i + 1);
-            LayoutParams layoutParams = (LayoutParams) v.getLayoutParams();
-            LayoutParams endLayout = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                endLayout = new LayoutParams(layoutParams);
-            }else{
-                endLayout = LayoutParamsALT(layoutParams);
-            }
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
+            RelativeLayout.LayoutParams endLayout = new RelativeLayout.LayoutParams(layoutParams);
             ValueAnimator layoutAnim = ValueAnimator.ofObject(new RelativeLayoutParamsEvaluator(), endLayout, mLayoutsMap.get(nv));
             layoutAnim.setDuration(100);
             layoutAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -247,15 +206,10 @@ public class CardAnimator {
                 if (al != null) {
                     al.onAnimationEnd(animation);
                 }
-                mLayoutsMap = new HashMap<View, LayoutParams>();
+                mLayoutsMap = new HashMap<View, RelativeLayout.LayoutParams>();
                 for (View v : mCardCollection) {
-                    LayoutParams params = (LayoutParams) v.getLayoutParams();
-                    LayoutParams paramsCopy = null;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                        paramsCopy = new LayoutParams(params);
-                    }else{
-                        paramsCopy =  LayoutParamsALT(params);
-                    }
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                    RelativeLayout.LayoutParams paramsCopy = new RelativeLayout.LayoutParams(params);
                     mLayoutsMap.put(v, paramsCopy);
                 }
 
@@ -289,13 +243,8 @@ public class CardAnimator {
         rotationAnim.start();//start the animation
 
         for (final View v : mCardCollection) {
-            LayoutParams layoutParams = (LayoutParams) v.getLayoutParams();
-            LayoutParams endLayout = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                endLayout = new LayoutParams(layoutParams);
-            }else {
-                endLayout = LayoutParamsALT(layoutParams);
-            }
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
+            RelativeLayout.LayoutParams endLayout = new RelativeLayout.LayoutParams(layoutParams);
             ValueAnimator layoutAnim = ValueAnimator.ofObject(new RelativeLayoutParamsEvaluator(), endLayout, mLayoutsMap.get(v));
             layoutAnim.setDuration(250);
             layoutAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -318,8 +267,8 @@ public class CardAnimator {
 
         float rotation_coefficient = 20f;//
 
-        LayoutParams layoutParams = (LayoutParams) topView.getLayoutParams();
-        LayoutParams topViewLayouts = mLayoutsMap.get(topView);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) topView.getLayoutParams();
+        RelativeLayout.LayoutParams topViewLayouts = mLayoutsMap.get(topView);
         int x_diff = (int) ((e2.getRawX() - e1.getRawX()));
         int y_diff = (int) ((e2.getRawY() - e1.getRawY()));
 
