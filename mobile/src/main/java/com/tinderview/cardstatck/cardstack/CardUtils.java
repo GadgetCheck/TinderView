@@ -1,6 +1,5 @@
 package com.tinderview.cardstatck.cardstack;
 
-import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -21,7 +20,7 @@ public class CardUtils {
 
     //it remove some pixels from the each sides of given view and then set that layout to view using setLayoutParams method.
     public static void scale(View v, int pixel) {
-        LayoutParams params = (LayoutParams) v.getLayoutParams();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
         params.leftMargin -= pixel;
         params.rightMargin -= pixel;
         params.topMargin -= pixel;
@@ -32,9 +31,9 @@ public class CardUtils {
 
     //setting the layout margin dynamically to make it as stack view and returning the layoutParams object.
     public static LayoutParams getMoveParams(View v, int upDown, int leftRight) {
-        LayoutParams original = (LayoutParams) v.getLayoutParams();
+        RelativeLayout.LayoutParams original = (RelativeLayout.LayoutParams) v.getLayoutParams();
         //RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(original);
-        LayoutParams params = cloneParams(original);
+        RelativeLayout.LayoutParams params = cloneParams(original);
         params.leftMargin += leftRight;
         params.rightMargin -= leftRight;
         Log.d("moving...", params.leftMargin + "");
@@ -46,7 +45,7 @@ public class CardUtils {
 
     //used to move the card based on parameter, from this method again it's calling the getMoveParams(v,upDown,leftRight) methods
     public static void move(View v, int upDown, int leftRight) {
-        LayoutParams params = getMoveParams(v, upDown, leftRight);
+        RelativeLayout.LayoutParams params = getMoveParams(v, upDown, leftRight);
         v.setLayoutParams(params);
     }
 
@@ -81,8 +80,8 @@ public class CardUtils {
     }
 
     //a copy method for RelativeLayout.LayoutParams for backward compatibility
-    public static LayoutParams cloneParams(LayoutParams params) {
-        LayoutParams copy = new LayoutParams(params.width, params.height);
+    public static RelativeLayout.LayoutParams cloneParams(RelativeLayout.LayoutParams params) {
+        RelativeLayout.LayoutParams copy = new RelativeLayout.LayoutParams(params.width, params.height);
         copy.leftMargin = params.leftMargin;
         copy.topMargin = params.topMargin;
         copy.rightMargin = params.rightMargin;
@@ -91,11 +90,8 @@ public class CardUtils {
         for (int i = 0; i < rules.length; i++) {
             copy.addRule(i, rules[i]);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            copy.setMarginStart(params.getMarginStart());
-            copy.setMarginEnd(params.getMarginEnd());
-        }
-
+        copy.setMarginStart(params.getMarginStart());
+        copy.setMarginEnd(params.getMarginEnd());
 
         return copy;
     }
