@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tinderview.data.Profile
@@ -68,6 +69,8 @@ fun ProfileCard(
                 color = Color.White.copy(alpha = 0.92f),
                 fontSize = 16.sp,
                 lineHeight = 22.sp,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }

@@ -2,6 +2,7 @@ package com.tinderview.cardstack
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -65,6 +66,7 @@ private fun Stamp(
     val shape = remember { RoundedCornerShape(6.dp) }
     Box(
         modifier = Modifier
+            .fillMaxSize()
             .clearAndSetSemantics { }
             .padding(20.dp),
         contentAlignment = alignment,

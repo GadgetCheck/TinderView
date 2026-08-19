@@ -104,6 +104,10 @@ public object CardStackMath {
         return rubberBand(offsetX, xAllowed) to rubberBand(offsetY, yAllowed)
     }
 
+    public fun resolvedDimension(value: Float, fallback: Float): Float {
+        return if (value < 8f) fallback else value
+    }
+
     public fun exitTarget(
         direction: SwipeDirection,
         cardWidth: Float,

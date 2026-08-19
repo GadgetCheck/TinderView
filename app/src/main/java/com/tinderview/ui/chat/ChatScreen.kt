@@ -31,7 +31,11 @@ fun ChatScreen(
     liked: List<Profile>,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier.fillMaxSize()) {
+    Column(
+        modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
         Text(
             text = "Chat",
             style = MaterialTheme.typography.headlineMedium,
@@ -64,7 +68,11 @@ fun ChatScreen(
                         Column(Modifier.padding(start = 14.dp)) {
                             Text(profile.name, fontWeight = FontWeight.SemiBold)
                             Text(
-                                text = "You matched with ${profile.name}",
+                                text = if (profile.isMatch) {
+                                    "You matched with ${profile.name}"
+                                } else {
+                                    "You liked ${profile.name}"
+                                },
                                 color = Color.Gray,
                             )
                         }

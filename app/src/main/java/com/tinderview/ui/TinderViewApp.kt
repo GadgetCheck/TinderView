@@ -1,5 +1,7 @@
 package com.tinderview.ui
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -12,6 +14,9 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.zIndex
 import com.tinderview.data.Profile
 import com.tinderview.ui.chat.ChatScreen
 import com.tinderview.ui.connect.ConnectScreen
@@ -43,18 +48,33 @@ fun TinderViewApp() {
             }
         },
     ) { padding ->
-        when (destinations[selected]) {
-            Dest.Connect -> ConnectScreen(
-                modifier = Modifier.padding(padding),
-                onLiked = { profile ->
-                    if (liked.none { it.id == profile.id }) liked.add(0, profile)
-                },
-            )
-            Dest.Discover -> DiscoverScreen(modifier = Modifier.padding(padding))
-            Dest.Chat -> ChatScreen(
-                modifier = Modifier.padding(padding),
-                liked = liked,
-            )
+        val dest = destinations[selected]
+        Box(
+            Modifier
+                .padding(padding)
+                .fillMaxSize(),
+        ) {
+            // Keep Connect composed across tabs so the deck, rewind
+            // history, and pulse intro survive a Discover/Chat peek.
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .zIndex(if (dest == Dest.Connect) 1f else 0f)
+                    .graphicsLayer { alpha = if (dest == Dest.Connect) 1f else 0f }
+                    .then(if (dest != Dest.Connect) Modifier.clearAndSetSemantics { } else Modifier),
+            ) {
+                ConnectScreen(
+                    onLiked = { profile ->
+                        if (liked.none { it.id == profile.id }) liked.add(0, profile)
+                    },
+                )
+            }
+            if (dest == Dest.Discover) {
+                DiscoverScreen(modifier = Modifier.fillMaxSize())
+            }
+            if (dest == Dest.Chat) {
+                ChatScreen(modifier = Modifier.fillMaxSize(), liked = liked)
+            }
         }
     }
 }

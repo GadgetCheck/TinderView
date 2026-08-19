@@ -10,8 +10,12 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,13 +41,17 @@ fun GlassActionBar(
     onLike: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val pill = RoundedCornerShape(percent = 50)
     Row(
         modifier = modifier
+            .fillMaxWidth()
+            .height(88.dp)
             .graphicsLayer { alpha = 0.96f }
-            .clip(CircleShape)
+            .clip(pill)
             .background(Color(0x66111114))
-            .border(1.dp, Color.White.copy(alpha = 0.18f), CircleShape),
-        horizontalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterHorizontally),
+            .border(1.dp, Color.White.copy(alpha = 0.18f), pill)
+            .padding(horizontal = 10.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         ActionButton(

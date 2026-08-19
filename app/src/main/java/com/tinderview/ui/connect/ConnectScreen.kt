@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -125,17 +126,30 @@ fun ConnectScreen(
             onDismissRequest = { selected = null },
             sheetState = sheetState,
         ) {
-            Column(Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 8.dp),
+            ) {
                 ProfileCard(
                     profile = profile,
-                    modifier = Modifier.height(360.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(280.dp),
                 )
                 Spacer(Modifier.height(16.dp))
+                Text(
+                    text = "${profile.name}, ${profile.age} · ${profile.city}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Spacer(Modifier.height(8.dp))
                 Text(profile.bio, style = MaterialTheme.typography.bodyLarge)
                 TextButton(
                     onClick = { selected = null },
                     modifier = Modifier.align(Alignment.End),
                 ) { Text("Close") }
+                Spacer(Modifier.height(24.dp))
             }
         }
     }

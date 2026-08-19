@@ -27,7 +27,11 @@ import com.tinderview.data.SampleProfiles
 
 @Composable
 fun DiscoverScreen(modifier: Modifier = Modifier) {
-    Column(modifier.fillMaxSize()) {
+    Column(
+        modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
         Text(
             text = "Discover",
             style = MaterialTheme.typography.headlineMedium,

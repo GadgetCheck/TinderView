@@ -70,15 +70,22 @@ public class CardStackState internal constructor(
     public val swipeProgress: Float
         get() = progressToward(properties.enabledDirections, properties.thresholdFraction).second
 
+    internal fun resolvedCardSize(): Size {
+        val width = CardStackMath.resolvedDimension(cardSize.width, 1080f)
+        val height = CardStackMath.resolvedDimension(cardSize.height, 1920f)
+        return Size(width, height)
+    }
+
     internal fun progressToward(
         enabled: Set<SwipeDirection>,
         thresholdFraction: Float = 0.35f,
     ): Pair<SwipeDirection?, Float> {
         val current = dragOffset
+        val size = resolvedCardSize()
         return CardStackMath.progressTowardCommit(
             offsetX = current.x,
             offsetY = current.y,
-            cardWidth = cardSize.width.coerceAtLeast(1f),
+            cardWidth = size.width,
             thresholdFraction = thresholdFraction,
             enabled = enabled,
         )
@@ -97,11 +104,14 @@ public class CardStackState internal constructor(
 
     public suspend fun rewind() {
         if (!canRewind) return
+        val exit = lastExit
+        // Place the returning card off-screen *before* the index moves or
+        // [animating] flips, otherwise one frame draws it at rest in the center.
+        fingerOffset = exit
+        currentIndex = CardStackMath.previousIndex(currentIndex)
+        offset.snapTo(exit)
         animating = true
         try {
-            currentIndex = CardStackMath.previousIndex(currentIndex)
-            fingerOffset = lastExit
-            offset.snapTo(lastExit)
             if (reduceMotion) {
                 offset.snapTo(Offset.Zero)
             } else {
@@ -142,10 +152,11 @@ public class CardStackState internal constructor(
         val swipedIndex = currentIndex
         animating = true
         try {
+            val size = resolvedCardSize()
             val (tx, ty) = CardStackMath.exitTarget(
                 direction = direction,
-                cardWidth = cardSize.width.coerceAtLeast(1f),
-                cardHeight = cardSize.height.coerceAtLeast(1f),
+                cardWidth = size.width,
+                cardHeight = size.height,
                 currentX = dragOffset.x,
                 currentY = dragOffset.y,
             )

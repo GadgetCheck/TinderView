@@ -126,6 +126,13 @@ public class CardStackMathTest {
     }
 
     @Test
+    public fun resolvedDimensionFallsBackWhenUnmeasured() {
+        assertEquals(1080f, CardStackMath.resolvedDimension(0f, 1080f), 0.01f)
+        assertEquals(1080f, CardStackMath.resolvedDimension(1f, 1080f), 0.01f)
+        assertEquals(400f, CardStackMath.resolvedDimension(400f, 1080f), 0.01f)
+    }
+
+    @Test
     public fun progressIsHalfAtMidThreshold() {
         val (_, progress) = CardStackMath.progressTowardCommit(
             offsetX = 70f,
