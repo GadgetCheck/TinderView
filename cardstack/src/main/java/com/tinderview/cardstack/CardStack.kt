@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key as composeKey
 import androidx.compose.runtime.mutableStateOf
@@ -67,8 +68,13 @@ public fun <T> CardStack(
     val onClickState = rememberUpdatedState(onTopCardClick)
     val itemsState = rememberUpdatedState(items)
 
-    state.properties = properties
-    state.itemCountProvider = { items.size }
+    SideEffect {
+        state.properties = properties
+        state.itemCountProvider = { items.size }
+        state.onSettledSwipe = { index, direction ->
+            itemsState.value.getOrNull(index)?.let { onSwipedState.value(it, direction) }
+        }
+    }
     state.reduceMotion = remember(context) {
         Settings.Global.getFloat(
             context.contentResolver,
@@ -91,7 +97,9 @@ public fun <T> CardStack(
     BoxWithConstraints(modifier = modifier) {
         val widthPx = constraints.maxWidth.toFloat()
         val heightPx = constraints.maxHeight.toFloat()
-        state.updateCardSize(Size(widthPx, heightPx))
+        SideEffect {
+            state.updateCardSize(Size(widthPx, heightPx))
+        }
 
         val start = state.currentIndex
         val lastVisible = min(start + properties.visibleCount - 1, items.lastIndex)
@@ -122,10 +130,10 @@ public fun <T> CardStack(
                         scaleX = scale
                         scaleY = scale
                         if (isTop) {
-                            translationX = state.offset.value.x
-                            translationY += state.offset.value.y
+                            translationX = state.dragOffset.x
+                            translationY += state.dragOffset.y
                             rotationZ = CardStackMath.rotationZ(
-                                translationX = state.offset.value.x,
+                                translationX = state.dragOffset.x,
                                 divisor = properties.rotationDivisor,
                                 maxRotation = properties.maxRotationZ,
                             )
@@ -145,15 +153,15 @@ public fun <T> CardStack(
                                     contentDescription = "Top card"
                                     customActions = listOf(
                                         CustomAccessibilityAction("Like") {
-                                            scope.launch { commitSwipe(state, SwipeDirection.Right, itemsState.value, onSwipedState.value) }
+                                            scope.launch { state.swipe(SwipeDirection.Right) }
                                             true
                                         },
                                         CustomAccessibilityAction("Pass") {
-                                            scope.launch { commitSwipe(state, SwipeDirection.Left, itemsState.value, onSwipedState.value) }
+                                            scope.launch { state.swipe(SwipeDirection.Left) }
                                             true
                                         },
                                         CustomAccessibilityAction("Super like") {
-                                            scope.launch { commitSwipe(state, SwipeDirection.Up, itemsState.value, onSwipedState.value) }
+                                            scope.launch { state.swipe(SwipeDirection.Up) }
                                             true
                                         },
                                         CustomAccessibilityAction("Rewind") {
@@ -174,38 +182,44 @@ public fun <T> CardStack(
                                         try {
                                             while (true) {
                                                 val event = awaitPointerEvent()
-                                                val change = event.changes.firstOrNull { it.id == down.id } ?: break
-                                                if (change.changedToUpIgnoreConsumed()) {
-                                                    if (!dragging) {
-                                                        itemsState.value.getOrNull(state.currentIndex)?.let {
-                                                            onClickState.value(it)
-                                                        }
-                                                    } else {
-                                                        val velocity = tracker.calculateVelocity()
-                                                        val (dir, progress) = state.progressToward(
-                                                            properties.enabledDirections,
-                                                            properties.thresholdFraction,
-                                                        )
-                                                        val commit = CardStackMath.shouldCommit(
-                                                            direction = dir,
-                                                            progress = progress,
-                                                            velocityX = velocity.x,
-                                                            velocityY = velocity.y,
-                                                            flingVelocityPx = state.flingVelocityPx(properties, density),
-                                                            enabled = properties.enabledDirections,
-                                                        )
-                                                        if (commit != null) {
-                                                            if (properties.enableHaptics) {
-                                                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                            }
-                                                            val itemAtTop = itemsState.value.getOrNull(state.currentIndex)
-                                                            scope.launch {
-                                                                state.throwOff(commit, Offset(velocity.x, velocity.y))
-                                                                if (itemAtTop != null) onSwipedState.value(itemAtTop, commit)
+                                                val change = event.changes.firstOrNull { it.id == down.id }
+                                                if (change == null) {
+                                                    if (dragging) scope.launch { state.snapBack() }
+                                                    break
+                                                }
+                                                if (!change.pressed) {
+                                                    if (change.changedToUpIgnoreConsumed()) {
+                                                        if (!dragging) {
+                                                            itemsState.value.getOrNull(state.currentIndex)?.let {
+                                                                onClickState.value(it)
                                                             }
                                                         } else {
-                                                            scope.launch { state.snapBack() }
+                                                            val velocity = tracker.calculateVelocity()
+                                                            val (dir, progress) = state.progressToward(
+                                                                properties.enabledDirections,
+                                                                properties.thresholdFraction,
+                                                            )
+                                                            val commit = CardStackMath.shouldCommit(
+                                                                direction = dir,
+                                                                progress = progress,
+                                                                velocityX = velocity.x,
+                                                                velocityY = velocity.y,
+                                                                flingVelocityPx = state.flingVelocityPx(properties, density),
+                                                                enabled = properties.enabledDirections,
+                                                            )
+                                                            if (commit != null) {
+                                                                if (properties.enableHaptics) {
+                                                                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                                }
+                                                                scope.launch {
+                                                                    state.throwOff(commit, Offset(velocity.x, velocity.y))
+                                                                }
+                                                            } else {
+                                                                scope.launch { state.snapBack() }
+                                                            }
                                                         }
+                                                    } else if (dragging) {
+                                                        scope.launch { state.snapBack() }
                                                     }
                                                     break
                                                 }
@@ -222,7 +236,7 @@ public fun <T> CardStack(
                                                         total.y,
                                                         properties.enabledDirections,
                                                     )
-                                                    scope.launch { state.dragTo(Offset(cx, cy)) }
+                                                    state.dragTo(Offset(cx, cy))
                                                     val progress = state.progressToward(
                                                         properties.enabledDirections,
                                                         properties.thresholdFraction,
@@ -299,15 +313,4 @@ private fun OverlayLayer(
     if (likeProgress > 0f) likeOverlay(likeProgress)
     if (passProgress > 0f) passOverlay(passProgress)
     if (superProgress > 0f) superLikeOverlay(superProgress)
-}
-
-private suspend fun <T> commitSwipe(
-    state: CardStackState,
-    direction: SwipeDirection,
-    items: List<T>,
-    onSwiped: (T, SwipeDirection) -> Unit,
-) {
-    val item = items.getOrNull(state.currentIndex) ?: return
-    state.swipe(direction)
-    onSwiped(item, direction)
 }

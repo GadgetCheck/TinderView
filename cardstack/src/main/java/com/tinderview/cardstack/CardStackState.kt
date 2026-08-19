@@ -39,6 +39,8 @@ public class CardStackState internal constructor(
 
     internal val offset = Animatable(Offset.Zero, Offset.VectorConverter)
 
+    internal var fingerOffset: Offset by mutableStateOf(Offset.Zero)
+
     internal var cardSize: Size by mutableStateOf(Size.Zero)
 
     internal var lastDirection: SwipeDirection? by mutableStateOf(null)
@@ -48,6 +50,8 @@ public class CardStackState internal constructor(
     internal var properties: CardStackProperties = CardStackProperties()
 
     internal var reduceMotion: Boolean = false
+
+    internal var onSettledSwipe: ((swipedIndex: Int, direction: SwipeDirection) -> Unit)? = null
 
     internal var animating: Boolean by mutableStateOf(false)
 
@@ -61,18 +65,19 @@ public class CardStackState internal constructor(
         get() = currentIndex < itemCountProvider() && !isAnimating
 
     public val dragOffset: Offset
-        get() = offset.value
+        get() = if (offset.isRunning || animating) offset.value else fingerOffset
 
     public val swipeProgress: Float
-        get() = progressToward(CardStackProperties().enabledDirections).second
+        get() = progressToward(properties.enabledDirections, properties.thresholdFraction).second
 
     internal fun progressToward(
         enabled: Set<SwipeDirection>,
         thresholdFraction: Float = 0.35f,
     ): Pair<SwipeDirection?, Float> {
+        val current = dragOffset
         return CardStackMath.progressTowardCommit(
-            offsetX = offset.value.x,
-            offsetY = offset.value.y,
+            offsetX = current.x,
+            offsetY = current.y,
             cardWidth = cardSize.width.coerceAtLeast(1f),
             thresholdFraction = thresholdFraction,
             enabled = enabled,
@@ -95,12 +100,14 @@ public class CardStackState internal constructor(
         animating = true
         try {
             currentIndex = CardStackMath.previousIndex(currentIndex)
+            fingerOffset = lastExit
             offset.snapTo(lastExit)
             if (reduceMotion) {
                 offset.snapTo(Offset.Zero)
             } else {
                 offset.animateTo(Offset.Zero, offsetSpring(properties.rewindSpring))
             }
+            fingerOffset = Offset.Zero
             lastDirection = null
             lastExit = Offset.Zero
         } finally {
@@ -108,18 +115,20 @@ public class CardStackState internal constructor(
         }
     }
 
-    internal suspend fun dragTo(target: Offset) {
-        offset.snapTo(target)
+    internal fun dragTo(target: Offset) {
+        fingerOffset = target
     }
 
     internal suspend fun snapBack() {
         animating = true
         try {
+            offset.snapTo(fingerOffset)
             if (reduceMotion) {
                 offset.snapTo(Offset.Zero)
             } else {
                 offset.animateTo(Offset.Zero, offsetSpring(properties.snapSpring))
             }
+            fingerOffset = Offset.Zero
         } finally {
             animating = false
         }
@@ -130,16 +139,18 @@ public class CardStackState internal constructor(
         initialVelocity: Offset,
     ) {
         if (currentIndex >= itemCountProvider()) return
+        val swipedIndex = currentIndex
         animating = true
         try {
             val (tx, ty) = CardStackMath.exitTarget(
                 direction = direction,
                 cardWidth = cardSize.width.coerceAtLeast(1f),
                 cardHeight = cardSize.height.coerceAtLeast(1f),
-                currentX = offset.value.x,
-                currentY = offset.value.y,
+                currentX = dragOffset.x,
+                currentY = dragOffset.y,
             )
             val target = Offset(tx, ty)
+            offset.snapTo(fingerOffset)
             if (reduceMotion) {
                 offset.snapTo(target)
             } else {
@@ -149,10 +160,12 @@ public class CardStackState internal constructor(
                     initialVelocity = initialVelocity,
                 )
             }
+            fingerOffset = Offset.Zero
             lastDirection = direction
             lastExit = target
             currentIndex = CardStackMath.nextIndex(currentIndex, itemCountProvider())
             offset.snapTo(Offset.Zero)
+            onSettledSwipe?.invoke(swipedIndex, direction)
         } finally {
             animating = false
         }

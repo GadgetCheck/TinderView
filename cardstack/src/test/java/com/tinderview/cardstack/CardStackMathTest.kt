@@ -90,4 +90,50 @@ public class CardStackMathTest {
         val banded = CardStackMath.rubberBand(raw, allow = false)
         assertTrue(banded < raw && banded > 0f)
     }
+
+    @Test
+    public fun distanceThresholdCommitsWithoutFling() {
+        val commit = CardStackMath.shouldCommit(
+            direction = SwipeDirection.Left,
+            progress = 1f,
+            velocityX = 0f,
+            velocityY = 0f,
+            flingVelocityPx = 900f,
+            enabled = allDirections,
+        )
+        assertEquals(SwipeDirection.Left, commit)
+    }
+
+    @Test
+    public fun constrainDragRubberBandsDisabledUp() {
+        val (x, y) = CardStackMath.constrainDrag(
+            offsetX = 80f,
+            offsetY = -200f,
+            enabled = setOf(SwipeDirection.Left, SwipeDirection.Right),
+        )
+        assertEquals(80f, x, 0.01f)
+        assertTrue(kotlin.math.abs(y) < 200f)
+    }
+
+    @Test
+    public fun exitTargetLeavesTheScreen() {
+        val (rightX, _) = CardStackMath.exitTarget(SwipeDirection.Right, 400f, 600f, 20f, 10f)
+        val (leftX, _) = CardStackMath.exitTarget(SwipeDirection.Left, 400f, 600f, -20f, 10f)
+        val (_, upY) = CardStackMath.exitTarget(SwipeDirection.Up, 400f, 600f, 0f, -20f)
+        assertTrue(rightX > 400f)
+        assertTrue(leftX < -400f)
+        assertTrue(upY < -600f)
+    }
+
+    @Test
+    public fun progressIsHalfAtMidThreshold() {
+        val (_, progress) = CardStackMath.progressTowardCommit(
+            offsetX = 70f,
+            offsetY = 0f,
+            cardWidth = 400f,
+            thresholdFraction = 0.35f,
+            enabled = allDirections,
+        )
+        assertEquals(0.5f, progress, 0.02f)
+    }
 }
