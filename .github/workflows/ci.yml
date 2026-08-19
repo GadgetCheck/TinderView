@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main, "cursor/**"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - name: Assemble and unit test
+        run: ./gradlew assembleDebug testDebugUnitTest --stacktrace

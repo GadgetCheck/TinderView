@@ -1,46 +1,93 @@
-TinderView
-========
+# TinderView
 
-Created A Simple and Beautiful Tinder like card deck & Captain Train like toolbar.
+A lightweight Jetpack Compose card-stack for Android. Drag, fling, rewind — the 2026 swipe feel without a 2015 View hierarchy.
 
-This is heavily based on [AndroidSwipeableCardStack](https://github.com/wenchaojiang/AndroidSwipeableCardStack), wenchaojiang has written the library very well but i faced a lot of difficulty integrating it & that's the reason i built this app so that you dont waste time. Use this repo as a base for your app & build on top :).
+<video src="docs/demo.mp4" width="280" controls muted loop playsinline></video>
 
-API 16 and UP. (Support for API 16 is now live thanks to [#4] (https://github.com/GadgetCheck/TinderView/pull/4)) 
+The 24s clip walks the sample: pulse reveal, a below-threshold drag that springs back, like / nope / super-like throws, rewind, action-button squash, profile sheet, match burst, a real last-card swipe, empty deck, Explore, and Messages.
 
-In Action 
-=========
+## Usage
 
-[Click here to watch the app in action on youtube!](https://youtu.be/ccnkq9HmyVY)
+```kotlin
+val state = rememberCardStackState { profiles.size }
 
-![Screen 3](http://s4.postimg.org/x9bamw3yl/image.png)![Screen1](http://s4.postimg.org/7b7oguyh9/image.png)
+CardStack(
+    items = profiles,
+    key = { it.id },
+    state = state,
+    onSwiped = { profile, direction -> /* persist like / pass */ },
+    onTopCardClick = { profile -> /* open sheet */ },
+) { profile ->
+    ProfileCard(profile)
+}
 
-<a href="https://play.google.com/store/apps/details?id=com.tinderview&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-AC-global-none-all-co-pr-py-PartBadges-Oct1515-1"><img alt="Get it on Google Play" src="http://s22.postimg.org/stmzfw631/en_play_badge.png" /></a>
+// Same physics as a finger fling
+scope.launch { state.swipe(SwipeDirection.Right) }
+scope.launch { state.rewind() }
+```
 
-The demo is now available, dont forget to give it 5 stats if it helped you. Oh if you can contribute to development of the library in anyway i would love to see your pull request. 
+### Install
 
-Happy Coding! 
+```kotlin
+implementation(project(":cardstack"))
+```
 
-Developed By
-============
+The sample app (`:app`) is the reference integration. Maven Central publishing is a follow-up.
 
-* Aradh Pillai 
+### Properties
 
+| Property | Default | Meaning |
+| --- | --- | --- |
+| `visibleCount` | `3` | Cards composed at once |
+| `stackOffset` | `10.dp` | Depth offset for back cards |
+| `stackScaleStep` | `0.04` | Scale drop per depth |
+| `maxRotationZ` | `14f` | Peak tilt in degrees |
+| `thresholdFraction` | `0.35` | Commit distance as a fraction of card width |
+| `flingVelocity` | `900.dp` | Velocity (per second) that commits a throw |
+| `enabledDirections` | Left, Right, Up | Physical axes that can discard |
+| `enableHaptics` | `true` | One tick on threshold, one on commit |
+| `enableColorWash` | `true` | Leading-edge tint while dragging |
+| `snapSpring` / `throwSpring` | tuned springs | Snap-back vs exit |
 
-License
-=======
+Override via `CardStackProperties` or `CardStackDefaults.properties()`.
 
-    Copyright 2015 Aradh Pillai
+### Overlays
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+LIKE / NOPE / SUPER stamps receive **0f..1f** progress. Replace the defaults:
 
-       http://www.apache.org/licenses/LICENSE-2.0
+```kotlin
+CardStack(
+    items = profiles,
+    key = { it.id },
+    likeOverlay = { progress -> MyLikeStamp(progress) },
+    passOverlay = { progress -> MyNopeStamp(progress) },
+    superLikeOverlay = { progress -> MySuperStamp(progress) },
+) { ProfileCard(it) }
+```
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+### State
 
+| Field / API | Role |
+| --- | --- |
+| `currentIndex` | Top card in the stable list |
+| `canSwipe` / `canRewind` | Drive action buttons |
+| `isAnimating` | Ignore extra input mid-throw |
+| `swipe(direction)` | Programmatic discard |
+| `rewind()` | Fly the last card back in |
 
+The list is **not** mutated by the library. Swipe advances `currentIndex`; rewind decrements it. Use `onSwiped` for side effects only.
+
+## Sample
+
+`:app` is a Material 3 demo: full-bleed cards, liquid-glass action bar, Super Like, match burst, Discover grid, and Chat from liked profiles.
+
+```
+./gradlew :app:assembleDebug
+```
+
+## License
+
+Copyright 2015 Aradh Pillai  
+Copyright 2026 TinderView contributors
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
