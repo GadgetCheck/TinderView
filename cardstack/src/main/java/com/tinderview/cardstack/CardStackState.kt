@@ -1,7 +1,9 @@
 package com.tinderview.cardstack
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -15,8 +17,8 @@ import androidx.compose.ui.unit.Density
 
 @Composable
 public fun rememberCardStackState(
-    itemCount: () -> Int,
     initialIndex: Int = 0,
+    itemCount: () -> Int,
 ): CardStackState {
     val state = remember {
         CardStackState(initialIndex = initialIndex, itemCount = itemCount)
@@ -97,7 +99,7 @@ public class CardStackState internal constructor(
             if (reduceMotion) {
                 offset.snapTo(Offset.Zero)
             } else {
-                offset.animateTo(Offset.Zero, properties.rewindSpring)
+                offset.animateTo(Offset.Zero, offsetSpring(properties.rewindSpring))
             }
             lastDirection = null
             lastExit = Offset.Zero
@@ -116,7 +118,7 @@ public class CardStackState internal constructor(
             if (reduceMotion) {
                 offset.snapTo(Offset.Zero)
             } else {
-                offset.animateTo(Offset.Zero, properties.snapSpring)
+                offset.animateTo(Offset.Zero, offsetSpring(properties.snapSpring))
             }
         } finally {
             animating = false
@@ -143,7 +145,7 @@ public class CardStackState internal constructor(
             } else {
                 offset.animateTo(
                     targetValue = target,
-                    animationSpec = properties.throwSpring,
+                    animationSpec = offsetSpring(properties.throwSpring),
                     initialVelocity = initialVelocity,
                 )
             }
@@ -159,4 +161,12 @@ public class CardStackState internal constructor(
     internal fun flingVelocityPx(properties: CardStackProperties, density: Density): Float {
         return with(density) { properties.flingVelocity.toPx() }
     }
+}
+
+internal fun offsetSpring(spec: SpringSpec<Float>): SpringSpec<Offset> {
+    return spring(
+        dampingRatio = spec.dampingRatio,
+        stiffness = spec.stiffness,
+        visibilityThreshold = Offset(1f, 1f),
+    )
 }
