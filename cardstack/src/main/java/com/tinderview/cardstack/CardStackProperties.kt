@@ -14,8 +14,8 @@ import androidx.compose.ui.unit.dp
 @Immutable
 public data class CardStackProperties(
     public val visibleCount: Int = 3,
-    public val stackOffset: Dp = 10.dp,
-    public val stackScaleStep: Float = 0.04f,
+    public val stackOffset: Dp = 12.dp,
+    public val stackScaleStep: Float = 0.05f,
     public val maxRotationZ: Float = 14f,
     public val rotationDivisor: Float = 25f,
     public val thresholdFraction: Float = 0.35f,

@@ -6,8 +6,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,12 +21,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tinderview.data.Profile
+import com.tinderview.ui.theme.Ink
+import com.tinderview.ui.theme.InstrumentSerif
+import com.tinderview.ui.theme.PlusJakarta
 import kotlinx.coroutines.delay
 
 @Composable
@@ -33,12 +42,12 @@ fun MatchBurst(
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(profile.id) {
         visible = true
-        delay(2200)
+        delay(2300)
         onDismiss()
     }
     val scale by animateFloatAsState(
-        targetValue = if (visible) 1f else 0.4f,
-        animationSpec = spring(stiffness = 180f, dampingRatio = 0.6f),
+        targetValue = if (visible) 1f else 0.72f,
+        animationSpec = spring(stiffness = 220f, dampingRatio = 0.68f),
         label = "match-scale",
     )
     val alpha by animateFloatAsState(
@@ -48,26 +57,52 @@ fun MatchBurst(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xE6101114).copy(alpha = 0.88f * alpha))
+            .background(Ink.Wash.copy(alpha = 0.92f * alpha))
             .clickable(onClick = onDismiss),
         contentAlignment = Alignment.Center,
     ) {
+        Box(
+            Modifier
+                .size(340.dp)
+                .scale(scale)
+                .background(
+                    Brush.radialGradient(listOf(Ink.Coral.copy(alpha = 0.28f * alpha), Color.Transparent)),
+                    CircleShape,
+                ),
+        )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.scale(scale),
         ) {
-            Text("♥", fontSize = 72.sp, color = Color(0xFFFF6B6B))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    Modifier
+                        .size(72.dp)
+                        .offset(x = 10.dp)
+                        .clip(CircleShape)
+                        .background(Brush.linearGradient(listOf(Ink.Coral, Ink.CoralDeep))),
+                )
+                Box(
+                    Modifier
+                        .size(72.dp)
+                        .offset(x = (-10).dp)
+                        .clip(CircleShape)
+                        .background(Brush.linearGradient(profile.gradient)),
+                )
+            }
             Text(
                 text = "It's a match",
-                color = Color.White,
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Black,
-                modifier = Modifier.padding(top = 8.dp),
+                color = Ink.Cream,
+                fontSize = 42.sp,
+                fontFamily = InstrumentSerif,
+                fontStyle = FontStyle.Italic,
+                modifier = Modifier.padding(top = 22.dp),
             )
             Text(
                 text = "You and ${profile.name} liked each other",
-                color = Color.White.copy(alpha = 0.8f),
-                fontSize = 16.sp,
+                color = Ink.CreamMuted,
+                fontSize = 15.sp,
+                fontFamily = PlusJakarta,
                 modifier = Modifier.padding(top = 8.dp),
             )
         }

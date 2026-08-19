@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -24,12 +23,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.tinderview.ui.theme.CloseIcon
+import com.tinderview.ui.theme.HeartIcon
+import com.tinderview.ui.theme.Ink
+import com.tinderview.ui.theme.RewindIcon
+import com.tinderview.ui.theme.StarIcon
 
 @Composable
 fun GlassActionBar(
@@ -42,56 +45,50 @@ fun GlassActionBar(
     modifier: Modifier = Modifier,
 ) {
     val pill = RoundedCornerShape(percent = 50)
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(88.dp)
-            .graphicsLayer { alpha = 0.96f }
+            .shadow(22.dp, pill, ambientColor = Color.Black.copy(alpha = 0.45f), spotColor = Color.Black.copy(alpha = 0.55f))
             .clip(pill)
-            .background(Color(0x66111114))
-            .border(1.dp, Color.White.copy(alpha = 0.18f), pill)
-            .padding(horizontal = 10.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically,
+            .background(
+                Brush.verticalGradient(
+                    0f to Color(0xCC2A2724),
+                    1f to Color(0xE6141210),
+                ),
+            )
+            .border(1.dp, Color.White.copy(alpha = 0.16f), pill)
+            .padding(horizontal = 10.dp, vertical = 8.dp),
     ) {
-        ActionButton(
-            glyph = "↺",
-            tint = Color(0xFFF4C15D),
-            enabled = canRewind,
-            size = 54.dp,
-            onClick = onRewind,
-        )
-        ActionButton(
-            glyph = "✕",
-            tint = Color(0xFFFF6B6B),
-            enabled = canSwipe,
-            size = 64.dp,
-            onClick = onPass,
-        )
-        ActionButton(
-            glyph = "★",
-            tint = Color(0xFF4DA3FF),
-            enabled = canSwipe,
-            size = 54.dp,
-            onClick = onSuperLike,
-        )
-        ActionButton(
-            glyph = "♥",
-            tint = Color(0xFF3DDC84),
-            enabled = canSwipe,
-            size = 64.dp,
-            onClick = onLike,
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(68.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            ActionButton(enabled = canRewind, tint = Ink.Gold, size = 50.dp, onClick = onRewind) {
+                RewindIcon(Ink.Gold.copy(alpha = if (canRewind) 1f else 0.35f), size = 20.dp)
+            }
+            ActionButton(enabled = canSwipe, tint = Ink.Nope, size = 60.dp, onClick = onPass) {
+                CloseIcon(Ink.Nope.copy(alpha = if (canSwipe) 1f else 0.35f), size = 22.dp)
+            }
+            ActionButton(enabled = canSwipe, tint = Ink.Ice, size = 50.dp, onClick = onSuperLike) {
+                StarIcon(Ink.Ice.copy(alpha = if (canSwipe) 1f else 0.35f), size = 20.dp)
+            }
+            ActionButton(enabled = canSwipe, tint = Ink.Mint, size = 60.dp, onClick = onLike) {
+                HeartIcon(Ink.Mint.copy(alpha = if (canSwipe) 1f else 0.35f), size = 22.dp)
+            }
+        }
     }
 }
 
 @Composable
 private fun ActionButton(
-    glyph: String,
-    tint: Color,
     enabled: Boolean,
+    tint: Color,
     size: Dp,
     onClick: () -> Unit,
+    icon: @Composable () -> Unit,
 ) {
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -105,8 +102,8 @@ private fun ActionButton(
             .size(size)
             .scale(scale)
             .clip(CircleShape)
-            .background(Color.White.copy(alpha = if (enabled) 0.12f else 0.05f))
-            .border(1.5.dp, tint.copy(alpha = if (enabled) 0.9f else 0.25f), CircleShape)
+            .background(tint.copy(alpha = if (enabled) 0.16f else 0.06f))
+            .border(1.25.dp, tint.copy(alpha = if (enabled) 0.85f else 0.22f), CircleShape)
             .clickable(
                 enabled = enabled,
                 interactionSource = interaction,
@@ -115,11 +112,6 @@ private fun ActionButton(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = glyph,
-            color = tint.copy(alpha = if (enabled) 1f else 0.35f),
-            fontSize = if (size > 58.dp) 26.sp else 20.sp,
-            fontWeight = FontWeight.Bold,
-        )
+        icon()
     }
 }

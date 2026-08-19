@@ -4,14 +4,19 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -27,6 +32,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +42,9 @@ import com.tinderview.cardstack.SwipeDirection
 import com.tinderview.cardstack.rememberCardStackState
 import com.tinderview.data.Profile
 import com.tinderview.data.SampleProfiles
+import com.tinderview.ui.theme.Ink
+import com.tinderview.ui.theme.InstrumentSerif
+import com.tinderview.ui.theme.PlusJakarta
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -53,29 +63,30 @@ fun ConnectScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     LaunchedEffect(Unit) {
-        delay(1200)
+        delay(1100)
         ready = true
     }
 
-    Box(modifier.fillMaxSize()) {
+    Box(modifier.fillMaxSize().background(Ink.Night)) {
         if (!ready) {
             PulseLoader()
         }
 
         AnimatedVisibility(
             visible = ready,
-            enter = fadeIn() + scaleIn(initialScale = 0.96f),
+            enter = fadeIn() + scaleIn(initialScale = 0.975f),
             exit = fadeOut(),
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Wordmark()
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .widthIn(max = 480.dp)
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
                 ) {
                     if (state.currentIndex >= profiles.size) {
                         EmptyDeck(
@@ -110,8 +121,8 @@ fun ConnectScreen(
                     onSuperLike = { scope.launch { state.swipe(SwipeDirection.Up) } },
                     onLike = { scope.launch { state.swipe(SwipeDirection.Right) } },
                     modifier = Modifier
-                        .padding(bottom = 20.dp, top = 4.dp)
-                        .padding(horizontal = 20.dp, vertical = 10.dp),
+                        .padding(horizontal = 28.dp)
+                        .padding(bottom = 16.dp, top = 8.dp),
                 )
             }
         }
@@ -125,33 +136,77 @@ fun ConnectScreen(
         ModalBottomSheet(
             onDismissRequest = { selected = null },
             sheetState = sheetState,
+            containerColor = Ink.Raised,
+            contentColor = Ink.Cream,
         ) {
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                    .padding(horizontal = 22.dp, vertical = 8.dp),
             ) {
                 ProfileCard(
                     profile = profile,
+                    showBio = false,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(280.dp),
+                        .height(300.dp),
                 )
-                Spacer(Modifier.height(16.dp))
                 Text(
-                    text = "${profile.name}, ${profile.age} · ${profile.city}",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    text = profile.name,
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(top = 20.dp),
                 )
-                Spacer(Modifier.height(8.dp))
-                Text(profile.bio, style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = "${profile.age}  ·  ${profile.city}",
+                    color = Ink.CreamMuted,
+                    fontFamily = PlusJakarta,
+                    modifier = Modifier.padding(top = 4.dp),
+                )
+                Row(Modifier.padding(top = 14.dp)) {
+                    profile.interests.forEach { interest ->
+                        InfoChip(interest)
+                        Spacer(Modifier.width(8.dp))
+                    }
+                }
+                Text(
+                    text = profile.bio,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Ink.Cream.copy(alpha = 0.9f),
+                    modifier = Modifier.padding(top = 16.dp),
+                )
                 TextButton(
                     onClick = { selected = null },
                     modifier = Modifier.align(Alignment.End),
-                ) { Text("Close") }
-                Spacer(Modifier.height(24.dp))
+                ) {
+                    Text("Close", color = Ink.Coral, fontFamily = PlusJakarta, fontWeight = FontWeight.SemiBold)
+                }
+                Spacer(Modifier.height(20.dp))
             }
         }
+    }
+}
+
+@Composable
+private fun Wordmark() {
+    Row(
+        modifier = Modifier.padding(top = 6.dp, bottom = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            Modifier
+                .padding(end = 8.dp)
+                .size(7.dp)
+                .clip(CircleShape)
+                .background(Ink.Coral),
+        )
+        Text(
+            text = "tinderview",
+            color = Ink.Cream.copy(alpha = 0.72f),
+            fontFamily = PlusJakarta,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 13.sp,
+            letterSpacing = 3.2.sp,
+        )
     }
 }
 
@@ -165,14 +220,23 @@ private fun EmptyDeck(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.weight(1f))
-        Text("You're all caught up", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
         Text(
-            "Rewind the last card or check Discover.",
-            modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+            text = "That's everyone",
+            fontFamily = InstrumentSerif,
+            fontStyle = FontStyle.Italic,
+            fontSize = 36.sp,
+            color = Ink.Cream,
+        )
+        Text(
+            text = "Rewind the last card, or see who's nearby.",
+            modifier = Modifier.padding(top = 10.dp, bottom = 18.dp),
+            color = Ink.CreamMuted,
+            fontFamily = PlusJakarta,
         )
         if (canRewind) {
-            TextButton(onClick = onRewind) { Text("Rewind last swipe") }
+            TextButton(onClick = onRewind) {
+                Text("Rewind last swipe", color = Ink.Coral, fontFamily = PlusJakarta, fontWeight = FontWeight.SemiBold)
+            }
         }
         Spacer(Modifier.weight(1f))
     }

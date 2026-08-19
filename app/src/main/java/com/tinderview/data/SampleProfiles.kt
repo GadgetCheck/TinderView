@@ -9,6 +9,7 @@ data class Profile(
     val bio: String,
     val city: String,
     val gradient: List<Color>,
+    val interests: List<String>,
     val isMatch: Boolean = false,
 )
 
@@ -19,7 +20,8 @@ val SampleProfiles: List<Profile> = listOf(
         age = 27,
         bio = "Designs typefaces, climbs granite, never skips golden hour.",
         city = "Lisbon",
-        gradient = listOf(Color(0xFFFF7A59), Color(0xFFFFC371)),
+        gradient = listOf(Color(0xFFFF7A59), Color(0xFFE85D4C), Color(0xFF3A1D18)),
+        interests = listOf("Type", "Granite", "Film"),
         isMatch = true,
     ),
     Profile(
@@ -28,7 +30,8 @@ val SampleProfiles: List<Profile> = listOf(
         age = 31,
         bio = "Jazz pianist who makes a serious case for weeknight dancing.",
         city = "Brooklyn",
-        gradient = listOf(Color(0xFF667EEA), Color(0xFF764BA2)),
+        gradient = listOf(Color(0xFF7B8CFF), Color(0xFF5A3D8A), Color(0xFF1A1228)),
+        interests = listOf("Jazz", "Dance"),
     ),
     Profile(
         id = "mira",
@@ -36,7 +39,8 @@ val SampleProfiles: List<Profile> = listOf(
         age = 24,
         bio = "Marine biologist. Will talk about tide pools until the sun comes up.",
         city = "San Diego",
-        gradient = listOf(Color(0xFF2AF598), Color(0xFF009EFD)),
+        gradient = listOf(Color(0xFF3EE0C2), Color(0xFF0A7EA8), Color(0xFF062430)),
+        interests = listOf("Tide pools", "Coffee"),
     ),
     Profile(
         id = "theo",
@@ -44,7 +48,8 @@ val SampleProfiles: List<Profile> = listOf(
         age = 29,
         bio = "Chef. Makes pasta from scratch and playlists that start too loud.",
         city = "Austin",
-        gradient = listOf(Color(0xFFF7971E), Color(0xFFFFD200)),
+        gradient = listOf(Color(0xFFFFC857), Color(0xFFE07A2F), Color(0xFF3A1E0A)),
+        interests = listOf("Pasta", "Vinyl"),
     ),
     Profile(
         id = "sienna",
@@ -52,7 +57,8 @@ val SampleProfiles: List<Profile> = listOf(
         age = 26,
         bio = "Photo essays, thrifted denim, and a motorcycle named Pearl.",
         city = "Portland",
-        gradient = listOf(Color(0xFFEE9CA7), Color(0xFFFFDDE1)),
+        gradient = listOf(Color(0xFFF2B6C6), Color(0xFFC46B7A), Color(0xFF3A1A22)),
+        interests = listOf("35mm", "Pearl"),
     ),
     Profile(
         id = "kai",
@@ -60,7 +66,8 @@ val SampleProfiles: List<Profile> = listOf(
         age = 28,
         bio = "Builds furniture by day, stargazes from rooftops by night.",
         city = "Denver",
-        gradient = listOf(Color(0xFF2193B0), Color(0xFF6DD5ED)),
+        gradient = listOf(Color(0xFF6DD5ED), Color(0xFF1A6B8A), Color(0xFF0B1E26)),
+        interests = listOf("Oak", "Stars"),
     ),
     Profile(
         id = "lina",
@@ -68,7 +75,8 @@ val SampleProfiles: List<Profile> = listOf(
         age = 25,
         bio = "Runs sunrise 10Ks and still has energy for a second espresso.",
         city = "Berlin",
-        gradient = listOf(Color(0xFFC33764), Color(0xFF1D2671)),
+        gradient = listOf(Color(0xFFE36AA5), Color(0xFF5B2C6F), Color(0xFF160C22)),
+        interests = listOf("10K", "Espresso"),
     ),
     Profile(
         id = "omar",
@@ -76,6 +84,7 @@ val SampleProfiles: List<Profile> = listOf(
         age = 33,
         bio = "Documentary editor. Best first date is a flea market plus tacos.",
         city = "Chicago",
-        gradient = listOf(Color(0xFF11998E), Color(0xFF38EF7D)),
+        gradient = listOf(Color(0xFF5EEAD4), Color(0xFF0F766E), Color(0xFF06201D)),
+        interests = listOf("Cuts", "Tacos"),
     ),
 )

@@ -1,8 +1,11 @@
 package com.tinderview.ui.connect
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,58 +23,104 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tinderview.data.Profile
+import com.tinderview.ui.theme.Ink
+import com.tinderview.ui.theme.InstrumentSerif
+import com.tinderview.ui.theme.PlusJakarta
 
 @Composable
 fun ProfileCard(
     profile: Profile,
     modifier: Modifier = Modifier,
+    showBio: Boolean = true,
 ) {
-    val shape = remember { RoundedCornerShape(24.dp) }
-    val photo = remember(profile.id) { Brush.linearGradient(profile.gradient) }
+    val shape = remember { RoundedCornerShape(28.dp) }
+    val photo = remember(profile.id) {
+        Brush.linearGradient(profile.gradient)
+    }
     val scrim = remember {
         Brush.verticalGradient(
             0f to Color.Transparent,
-            0.45f to Color.Transparent,
-            1f to Color(0xA6000000),
+            0.42f to Color.Transparent,
+            0.72f to Color(0x66000000),
+            1f to Color(0xCC000000),
+        )
+    }
+    val sheen = remember {
+        Brush.linearGradient(
+            0f to Color.White.copy(alpha = 0.20f),
+            0.38f to Color.Transparent,
         )
     }
     Box(
         modifier = modifier
             .fillMaxSize()
             .clip(shape)
-            .background(photo),
+            .background(photo)
+            .border(1.dp, Color.White.copy(alpha = 0.14f), shape),
     ) {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(scrim),
-        )
+        Box(Modifier.fillMaxSize().background(sheen))
+        Box(Modifier.fillMaxSize().background(scrim))
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .fillMaxWidth()
-                .padding(22.dp),
+                .padding(horizontal = 22.dp, vertical = 20.dp),
         ) {
-            Text(
-                text = "${profile.name}, ${profile.age}",
-                color = Color.White,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-            )
-            Text(
-                text = profile.city,
-                color = Color.White.copy(alpha = 0.86f),
-                fontSize = 16.sp,
-                modifier = Modifier.padding(top = 2.dp, bottom = 8.dp),
-            )
-            Text(
-                text = profile.bio,
-                color = Color.White.copy(alpha = 0.92f),
-                fontSize = 16.sp,
-                lineHeight = 22.sp,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-            )
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(
+                    text = profile.name,
+                    color = Ink.Cream,
+                    fontSize = 40.sp,
+                    lineHeight = 42.sp,
+                    fontFamily = InstrumentSerif,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false),
+                )
+                Text(
+                    text = "  ${profile.age}",
+                    color = Ink.Cream.copy(alpha = 0.78f),
+                    fontSize = 22.sp,
+                    fontFamily = PlusJakarta,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(bottom = 4.dp),
+                )
+            }
+            Row(
+                modifier = Modifier.padding(top = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                InfoChip(profile.city)
+                profile.interests.take(2).forEach { InfoChip(it) }
+            }
+            if (showBio) {
+                Text(
+                    text = profile.bio,
+                    color = Ink.Cream.copy(alpha = 0.88f),
+                    fontSize = 15.sp,
+                    lineHeight = 21.sp,
+                    fontFamily = PlusJakarta,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 12.dp),
+                )
+            }
         }
     }
+}
+
+@Composable
+internal fun InfoChip(label: String) {
+    Text(
+        text = label,
+        color = Ink.Cream,
+        fontSize = 12.sp,
+        fontFamily = PlusJakarta,
+        fontWeight = FontWeight.Medium,
+        modifier = Modifier
+            .clip(RoundedCornerShape(50))
+            .background(Color.White.copy(alpha = 0.14f))
+            .border(1.dp, Color.White.copy(alpha = 0.12f), RoundedCornerShape(50))
+            .padding(horizontal = 10.dp, vertical = 5.dp),
+    )
 }

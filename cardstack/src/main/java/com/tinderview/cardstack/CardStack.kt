@@ -61,7 +61,7 @@ public fun <T> CardStack(
     val density = LocalDensity.current
     val haptics = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
-    val cardShape = remember { RoundedCornerShape(24.dp) }
+    val cardShape = remember { RoundedCornerShape(28.dp) }
 
     val onSwipedState = rememberUpdatedState(onSwiped)
     val onEmptyState = rememberUpdatedState(onEmpty)

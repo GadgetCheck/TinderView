@@ -1,5 +1,6 @@
 package com.tinderview.cardstack
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -71,16 +72,18 @@ private fun Stamp(
             .padding(20.dp),
         contentAlignment = alignment,
     ) {
+        val alpha = progress.coerceIn(0f, 1f)
         Text(
             text = label,
-            color = color.copy(alpha = progress.coerceIn(0f, 1f)),
-            fontSize = 32.sp,
+            color = color.copy(alpha = alpha),
+            fontSize = 28.sp,
             fontWeight = FontWeight.Black,
-            letterSpacing = 2.sp,
+            letterSpacing = 3.sp,
             modifier = Modifier
                 .rotate(rotation)
-                .border(3.5.dp, color.copy(alpha = progress.coerceIn(0f, 1f)), shape)
-                .padding(horizontal = 10.dp, vertical = 4.dp),
+                .background(color.copy(alpha = alpha * 0.12f), shape)
+                .border(2.dp, color.copy(alpha = alpha), shape)
+                .padding(horizontal = 12.dp, vertical = 5.dp),
         )
     }
 }

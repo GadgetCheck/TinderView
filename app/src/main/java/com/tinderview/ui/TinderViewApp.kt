@@ -1,10 +1,17 @@
 package com.tinderview.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,14 +20,23 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.tinderview.data.Profile
 import com.tinderview.ui.chat.ChatScreen
 import com.tinderview.ui.connect.ConnectScreen
 import com.tinderview.ui.discover.DiscoverScreen
+import com.tinderview.ui.theme.ChatIcon
+import com.tinderview.ui.theme.GridIcon
+import com.tinderview.ui.theme.Ink
+import com.tinderview.ui.theme.PlusJakarta
+import com.tinderview.ui.theme.SparkIcon
 
 private enum class Dest(val label: String) {
     Connect("Connect"),
@@ -35,27 +51,22 @@ fun TinderViewApp() {
     val destinations = Dest.entries
 
     Scaffold(
+        containerColor = Ink.Night,
         bottomBar = {
-            NavigationBar {
-                destinations.forEachIndexed { index, dest ->
-                    NavigationBarItem(
-                        selected = selected == index,
-                        onClick = { selected = index },
-                        icon = { DestinationGlyph(dest) },
-                        label = { Text(dest.label) },
-                    )
-                }
-            }
+            AppNavigationBar(
+                selected = selected,
+                destinations = destinations,
+                onSelect = { selected = it },
+            )
         },
     ) { padding ->
         val dest = destinations[selected]
         Box(
             Modifier
                 .padding(padding)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(Ink.Night),
         ) {
-            // Keep Connect composed across tabs so the deck, rewind
-            // history, and pulse intro survive a Discover/Chat peek.
             Box(
                 Modifier
                     .fillMaxSize()
@@ -80,12 +91,60 @@ fun TinderViewApp() {
 }
 
 @Composable
-private fun DestinationGlyph(dest: Dest) {
-    Text(
-        text = when (dest) {
-            Dest.Connect -> "✦"
-            Dest.Discover -> "▦"
-            Dest.Chat -> "✉"
-        },
-    )
+private fun AppNavigationBar(
+    selected: Int,
+    destinations: List<Dest>,
+    onSelect: (Int) -> Unit,
+) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .background(Ink.Ink)
+            .navigationBarsPadding(),
+    ) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(Ink.Hairline),
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            destinations.forEachIndexed { index, dest ->
+                val active = selected == index
+                val tint = if (active) Ink.Coral else Ink.CreamMuted
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { onSelect(index) },
+                        )
+                        .semantics { this.selected = active }
+                        .padding(vertical = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    when (dest) {
+                        Dest.Connect -> SparkIcon(tint, size = 18.dp)
+                        Dest.Discover -> GridIcon(tint, size = 18.dp)
+                        Dest.Chat -> ChatIcon(tint, size = 18.dp)
+                    }
+                    Text(
+                        text = dest.label,
+                        color = tint,
+                        fontFamily = PlusJakarta,
+                        style = androidx.compose.material3.MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                }
+            }
+        }
+    }
 }
