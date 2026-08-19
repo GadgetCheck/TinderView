@@ -1,0 +1,93 @@
+package com.tinderview.cardstack
+
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+public class CardStackMathTest {
+
+    private val allDirections = setOf(
+        SwipeDirection.Left,
+        SwipeDirection.Right,
+        SwipeDirection.Up,
+    )
+
+    @Test
+    public fun rotationIsClamped() {
+        val rotation = CardStackMath.rotationZ(1000f, divisor = 25f, maxRotation = 14f)
+        assertEquals(14f, rotation, 0.01f)
+    }
+
+    @Test
+    public fun dominantDirectionPrefersVerticalWhenUp() {
+        assertEquals(SwipeDirection.Up, CardStackMath.dominantDirection(10f, -80f))
+        assertEquals(SwipeDirection.Right, CardStackMath.dominantDirection(80f, -10f))
+        assertEquals(SwipeDirection.Left, CardStackMath.dominantDirection(-80f, 4f))
+    }
+
+    @Test
+    public fun progressReachesOneAtThreshold() {
+        val (_, progress) = CardStackMath.progressTowardCommit(
+            offsetX = 140f,
+            offsetY = 0f,
+            cardWidth = 400f,
+            thresholdFraction = 0.35f,
+            enabled = allDirections,
+        )
+        assertEquals(1f, progress, 0.01f)
+    }
+
+    @Test
+    public fun progressIsZeroWhenDirectionDisabled() {
+        val (_, progress) = CardStackMath.progressTowardCommit(
+            offsetX = 0f,
+            offsetY = -200f,
+            cardWidth = 400f,
+            thresholdFraction = 0.35f,
+            enabled = setOf(SwipeDirection.Left, SwipeDirection.Right),
+        )
+        assertEquals(0f, progress, 0.01f)
+    }
+
+    @Test
+    public fun flingCommitsEvenBelowDistanceThreshold() {
+        val commit = CardStackMath.shouldCommit(
+            direction = SwipeDirection.Right,
+            progress = 0.2f,
+            velocityX = 1200f,
+            velocityY = 10f,
+            flingVelocityPx = 900f,
+            enabled = allDirections,
+        )
+        assertEquals(SwipeDirection.Right, commit)
+    }
+
+    @Test
+    public fun weakFlingDoesNotCommit() {
+        val commit = CardStackMath.shouldCommit(
+            direction = SwipeDirection.Right,
+            progress = 0.2f,
+            velocityX = 200f,
+            velocityY = 0f,
+            flingVelocityPx = 900f,
+            enabled = allDirections,
+        )
+        assertNull(commit)
+    }
+
+    @Test
+    public fun indexAdvancesAndRewinds() {
+        assertEquals(1, CardStackMath.nextIndex(0, 5))
+        assertEquals(5, CardStackMath.nextIndex(5, 5))
+        assertEquals(0, CardStackMath.previousIndex(0))
+        assertEquals(2, CardStackMath.previousIndex(3))
+    }
+
+    @Test
+    public fun rubberBandReducesDisabledAxis() {
+        val raw = 200f
+        val banded = CardStackMath.rubberBand(raw, allow = false)
+        assertTrue(banded < raw && banded > 0f)
+    }
+}
