@@ -32,15 +32,14 @@ import com.tinderview.data.Profile
 import com.tinderview.ui.chat.ChatScreen
 import com.tinderview.ui.connect.ConnectScreen
 import com.tinderview.ui.discover.DiscoverScreen
+import com.tinderview.ui.theme.CardsIcon
 import com.tinderview.ui.theme.ChatIcon
-import com.tinderview.ui.theme.GridIcon
 import com.tinderview.ui.theme.Ink
-import com.tinderview.ui.theme.PlusJakarta
-import com.tinderview.ui.theme.SparkIcon
+import com.tinderview.ui.theme.SearchIcon
 
 private enum class Dest(val label: String) {
     Connect("Connect"),
-    Discover("Discover"),
+    Discover("Explore"),
     Chat("Chat"),
 }
 
@@ -123,7 +122,7 @@ private fun AppNavigationBar(
                     modifier = Modifier
                         .weight(1f)
                         .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
+                            interactionSource = remember(index) { MutableInteractionSource() },
                             indication = null,
                             onClick = { onSelect(index) },
                         )
@@ -132,14 +131,13 @@ private fun AppNavigationBar(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     when (dest) {
-                        Dest.Connect -> SparkIcon(tint, size = 18.dp)
-                        Dest.Discover -> GridIcon(tint, size = 18.dp)
-                        Dest.Chat -> ChatIcon(tint, size = 18.dp)
+                        Dest.Connect -> CardsIcon(tint, size = 20.dp)
+                        Dest.Discover -> SearchIcon(tint, size = 20.dp)
+                        Dest.Chat -> ChatIcon(tint, size = 20.dp)
                     }
                     Text(
                         text = dest.label,
                         color = tint,
-                        fontFamily = PlusJakarta,
                         style = androidx.compose.material3.MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(top = 4.dp),
                     )

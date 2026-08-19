@@ -33,18 +33,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.tinderview.cardstack.CardStack
 import com.tinderview.cardstack.SwipeDirection
 import com.tinderview.cardstack.rememberCardStackState
 import com.tinderview.data.Profile
 import com.tinderview.data.SampleProfiles
 import com.tinderview.ui.theme.Ink
-import com.tinderview.ui.theme.InstrumentSerif
-import com.tinderview.ui.theme.PlusJakarta
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -159,7 +155,7 @@ fun ConnectScreen(
                 Text(
                     text = "${profile.age}  ·  ${profile.city}",
                     color = Ink.CreamMuted,
-                    fontFamily = PlusJakarta,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 4.dp),
                 )
                 Row(Modifier.padding(top = 14.dp)) {
@@ -178,7 +174,7 @@ fun ConnectScreen(
                     onClick = { selected = null },
                     modifier = Modifier.align(Alignment.End),
                 ) {
-                    Text("Close", color = Ink.Coral, fontFamily = PlusJakarta, fontWeight = FontWeight.SemiBold)
+                    Text("Close", color = Ink.Coral, fontWeight = FontWeight.SemiBold)
                 }
                 Spacer(Modifier.height(20.dp))
             }
@@ -201,11 +197,9 @@ private fun Wordmark() {
         )
         Text(
             text = "tinderview",
-            color = Ink.Cream.copy(alpha = 0.72f),
-            fontFamily = PlusJakarta,
+            color = Ink.Cream,
+            style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 13.sp,
-            letterSpacing = 3.2.sp,
         )
     }
 }
@@ -222,20 +216,18 @@ private fun EmptyDeck(
         Spacer(Modifier.weight(1f))
         Text(
             text = "That's everyone",
-            fontFamily = InstrumentSerif,
-            fontStyle = FontStyle.Italic,
-            fontSize = 36.sp,
+            style = MaterialTheme.typography.displayMedium,
             color = Ink.Cream,
         )
         Text(
             text = "Rewind the last card, or see who's nearby.",
             modifier = Modifier.padding(top = 10.dp, bottom = 18.dp),
             color = Ink.CreamMuted,
-            fontFamily = PlusJakarta,
+            style = MaterialTheme.typography.bodyLarge,
         )
         if (canRewind) {
             TextButton(onClick = onRewind) {
-                Text("Rewind last swipe", color = Ink.Coral, fontFamily = PlusJakarta, fontWeight = FontWeight.SemiBold)
+                Text("Rewind last swipe", color = Ink.Coral, fontWeight = FontWeight.SemiBold)
             }
         }
         Spacer(Modifier.weight(1f))

@@ -19,11 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.tinderview.ui.theme.Ink
-import com.tinderview.ui.theme.PlusJakarta
 
 @Composable
 fun PulseLoader(modifier: Modifier = Modifier) {
@@ -55,11 +53,8 @@ fun PulseLoader(modifier: Modifier = Modifier) {
             }
             Text(
                 text = "tinderview",
-                color = Ink.Cream.copy(alpha = 0.55f),
-                fontFamily = PlusJakarta,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 12.sp,
-                letterSpacing = 3.4.sp,
+                color = Ink.Cream.copy(alpha = 0.72f),
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(top = 8.dp),
             )
         }

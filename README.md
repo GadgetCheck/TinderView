@@ -4,7 +4,7 @@ A lightweight Jetpack Compose card-stack for Android. Drag, fling, rewind — th
 
 <video src="docs/demo.mp4" width="280" controls muted loop playsinline></video>
 
-The 24s clip walks the sample: pulse reveal, a below-threshold drag that springs back, like / nope / super-like throws, rewind, action-button squash, profile sheet, match burst, a real last-card swipe, empty deck, Nearby, and Messages.
+The 24s clip walks the sample: pulse reveal, a below-threshold drag that springs back, like / nope / super-like throws, rewind, action-button squash, profile sheet, match burst, a real last-card swipe, empty deck, Explore, and Messages.
 
 ## Usage
 

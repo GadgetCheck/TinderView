@@ -25,13 +25,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.tinderview.data.Profile
 import com.tinderview.ui.theme.Ink
-import com.tinderview.ui.theme.InstrumentSerif
-import com.tinderview.ui.theme.PlusJakarta
 import kotlinx.coroutines.delay
 
 @Composable
@@ -93,16 +90,13 @@ fun MatchBurst(
             Text(
                 text = "It's a match",
                 color = Ink.Cream,
-                fontSize = 42.sp,
-                fontFamily = InstrumentSerif,
-                fontStyle = FontStyle.Italic,
+                style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier.padding(top = 22.dp),
             )
             Text(
                 text = "You and ${profile.name} liked each other",
                 color = Ink.CreamMuted,
-                fontSize = 15.sp,
-                fontFamily = PlusJakarta,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 8.dp),
             )
         }

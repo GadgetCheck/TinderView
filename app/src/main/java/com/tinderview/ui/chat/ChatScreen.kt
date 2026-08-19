@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.tinderview.data.Profile
 import com.tinderview.ui.theme.Ink
-import com.tinderview.ui.theme.PlusJakarta
 
 @Composable
 fun ChatScreen(
@@ -48,7 +47,6 @@ fun ChatScreen(
         Text(
             text = if (liked.isEmpty()) "Likes become conversations" else "${liked.size} open threads",
             color = Ink.CreamMuted,
-            fontFamily = PlusJakarta,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 4.dp, bottom = 10.dp),
         )
@@ -56,7 +54,7 @@ fun ChatScreen(
             Text(
                 text = "Like someone on Connect to start a conversation.",
                 color = Ink.CreamMuted,
-                fontFamily = PlusJakarta,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(horizontal = 22.dp, vertical = 12.dp),
             )
         } else {

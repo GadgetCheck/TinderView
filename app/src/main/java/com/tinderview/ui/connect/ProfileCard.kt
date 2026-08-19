@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -24,8 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tinderview.data.Profile
 import com.tinderview.ui.theme.Ink
-import com.tinderview.ui.theme.InstrumentSerif
-import com.tinderview.ui.theme.PlusJakarta
 
 @Composable
 fun ProfileCard(
@@ -34,9 +33,7 @@ fun ProfileCard(
     showBio: Boolean = true,
 ) {
     val shape = remember { RoundedCornerShape(28.dp) }
-    val photo = remember(profile.id) {
-        Brush.linearGradient(profile.gradient)
-    }
+    val photo = remember(profile.id) { Brush.linearGradient(profile.gradient) }
     val scrim = remember {
         Brush.verticalGradient(
             0f to Color.Transparent,
@@ -47,7 +44,7 @@ fun ProfileCard(
     }
     val sheen = remember {
         Brush.linearGradient(
-            0f to Color.White.copy(alpha = 0.20f),
+            0f to Color.White.copy(alpha = 0.16f),
             0.38f to Color.Transparent,
         )
     }
@@ -56,7 +53,7 @@ fun ProfileCard(
             .fillMaxSize()
             .clip(shape)
             .background(photo)
-            .border(1.dp, Color.White.copy(alpha = 0.14f), shape),
+            .border(1.dp, Color.White.copy(alpha = 0.12f), shape),
     ) {
         Box(Modifier.fillMaxSize().background(sheen))
         Box(Modifier.fillMaxSize().background(scrim))
@@ -70,9 +67,7 @@ fun ProfileCard(
                 Text(
                     text = profile.name,
                     color = Ink.Cream,
-                    fontSize = 40.sp,
-                    lineHeight = 42.sp,
-                    fontFamily = InstrumentSerif,
+                    style = MaterialTheme.typography.displayMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f, fill = false),
@@ -80,10 +75,9 @@ fun ProfileCard(
                 Text(
                     text = "  ${profile.age}",
                     color = Ink.Cream.copy(alpha = 0.78f),
-                    fontSize = 22.sp,
-                    fontFamily = PlusJakarta,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(bottom = 4.dp),
+                    modifier = Modifier.padding(bottom = 3.dp),
                 )
             }
             Row(
@@ -97,9 +91,9 @@ fun ProfileCard(
                 Text(
                     text = profile.bio,
                     color = Ink.Cream.copy(alpha = 0.88f),
+                    style = MaterialTheme.typography.bodyMedium,
                     fontSize = 15.sp,
                     lineHeight = 21.sp,
-                    fontFamily = PlusJakarta,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(top = 12.dp),
@@ -114,13 +108,11 @@ internal fun InfoChip(label: String) {
     Text(
         text = label,
         color = Ink.Cream,
-        fontSize = 12.sp,
-        fontFamily = PlusJakarta,
-        fontWeight = FontWeight.Medium,
+        style = MaterialTheme.typography.labelMedium,
         modifier = Modifier
             .clip(RoundedCornerShape(50))
             .background(Color.White.copy(alpha = 0.14f))
-            .border(1.dp, Color.White.copy(alpha = 0.12f), RoundedCornerShape(50))
+            .border(1.dp, Color.White.copy(alpha = 0.10f), RoundedCornerShape(50))
             .padding(horizontal = 10.dp, vertical = 5.dp),
     )
 }

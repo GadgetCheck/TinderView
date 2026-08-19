@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.tinderview.data.SampleProfiles
 import com.tinderview.ui.theme.Ink
-import com.tinderview.ui.theme.PlusJakarta
 
 @Composable
 fun DiscoverScreen(modifier: Modifier = Modifier) {
@@ -43,7 +42,6 @@ fun DiscoverScreen(modifier: Modifier = Modifier) {
         Text(
             text = "People around you tonight",
             color = Ink.CreamMuted,
-            fontFamily = PlusJakarta,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 4.dp, bottom = 8.dp),
         )
